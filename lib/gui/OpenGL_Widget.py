@@ -74,10 +74,10 @@ class OpenGLWidget(QGLWidget):
         if self.isInputFromCamera:
             ret, frame = self.videoCapture.read()
 
-            frame = self.detector.findPose(frame)
+            frame = self.detector.MediaPipe_findPose(frame)
+            # frame = self.detector.OpenPose_findPose(frame)
             if frame is not None and frame.any():
-                _ = self.detector.findPosition(frame, draw=True)
-
+                _ = self.detector.MediaPipe_findPosition(frame, draw=True)
                 cTime = time.time()
                 fps = 1 / (cTime - self.pTime)
                 self.pTime = cTime
@@ -134,7 +134,7 @@ class OpenGLWidget(QGLWidget):
         # img = cv2.rotate(img, cv2.cv2.ROTATE_180)
 
         if img is not None and img.any():
-            _ = self.detector.findPosition(img, draw=True)
+            _ = self.detector.MediaPipe_findPosition(img, draw=True)
             cTime = time.time()
             fps = 1 / (cTime - self.pTime)
             self.pTime = cTime
@@ -151,6 +151,9 @@ class OpenGLWidget(QGLWidget):
         self.isInputFromCamera = state
         if state:
             self.videoCapture = cv2.VideoCapture(0)
+            self.videoCapture.set(cv2.CAP_PROP_FPS, 24)
+            # self.videoCapture.set(3, 800)
+            # self.videoCapture.set(4, 800)
         else:
             if self.videoCapture is not None:
                 self.videoCapture.release()
